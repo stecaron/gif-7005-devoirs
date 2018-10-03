@@ -1,0 +1,81 @@
+---
+title: "Devoir 1: Rapport"
+subtitle: "GIF-7005: Introduction à l'apprentissage machine"
+author: "Stéphane Caron"
+date: '10 Octobre 2018'
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 1
+
+Dans cette question, il faut trouver l'estimateur du paramètre $\lambda$ d'une loi exponentielle par la méthode du maximum de vraisemblance. Par la suite, il faut déterminer si cet estimateur est un estimateur sans biais.
+
+## Partie a
+
+On commence avec l'équation de la densité de $x$:
+
+$$
+p(x)=\left\{
+                \begin{array}{ll}
+                  \lambda \exp(-\lambda x), & x \ge0\\
+                  0, & x <0
+                \end{array}
+              \right.
+$$
+
+La log-vraisemblance de $p(x)$ est donnée par:
+
+$$
+l(x_i;\lambda) = \prod_{i=1}^{n} p(x_i;\lambda) \\ = n log(\lambda) - \lambda \sum_{i=1}^{n}x_i
+$$
+
+On trouve l'estimateur du maximum de vraisemblance en dérivant l'équation précédente par rapport à $\lambda$ et en égalisant à zéro:
+
+$$
+\frac{dl(x_i:\lambda)}{d\lambda} = \frac{n}{\lambda} - \sum_{i=1}^{n}x_i
+$$
+En posant égale àa zéro, on trouve la valeur de l'estimateur $\hat{\lambda}$:
+
+$$
+\hat{\lambda}=\frac{n}{\sum_{i=1}^{n}x_i} = \frac{1}{\bar{X}}
+$$
+
+## Partie b
+
+Le biais d'un estimateur est donné par l'équation:
+
+$$
+\text{biais}(\hat{\theta})=E[\hat{\theta}] - \theta
+$$
+
+Commençons par trouver l'espérance de notre estimateur $\hat{\lambda}$:
+
+$$
+E[\hat{\lambda}]=nE\bigg[\frac{1}{\sum_{i=1}^{n}{x_i}}\bigg] = nE[Y^{-1}]
+$$
+où $Y \sim Gamma(n,1/\lambda)$. On peut trouver $E[Y^{-1}]$ de cette façon:
+
+$$ E[Y^{-1}] = \int_{0}^{\infty}\frac{1}{y}\frac{y^{n-1}\lambda^n\exp(-\lambda y)}{\Gamma(n)}dy $$
+$$=\int_{0}^{\infty}\frac{y^{n-2}\lambda^n\exp(-\lambda y)}{\Gamma(n)}dy $$
+$$= \frac{\Gamma(n-1)\lambda}{\Gamma(n)}\int_{0}^{\infty}\frac{y^{(n-1)-1}\lambda^n\exp(-\lambda y)}{\Gamma(n-1)}dy $$
+$$= \frac{\Gamma(n-1)\lambda}{\Gamma(n)} = \frac{\lambda}{n-1}$$
+
+On peut ensuite trouver le biais de l'estimateur:
+
+$$
+\text{biais}(\hat{\lambda})=E[\hat{\lambda}] - \lambda = nE[Y^{-1}]-\lambda \\
+= n\frac{\lambda}{(n-1)}-\lambda=\frac{\lambda}{n-1}
+$$
+
+On peut donc conclure que l'estimateur $\hat{\lambda}$ a un biais de $\frac{\lambda}{n-1}$. Il est toutefois asympotiquement sans biais.
+
+# Question 2
+
+# Question 3
