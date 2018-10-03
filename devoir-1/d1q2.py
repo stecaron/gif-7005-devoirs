@@ -96,11 +96,13 @@ if __name__ == '__main__':
 
     # On affiche la figure
     pyplot.show()
+    #fig.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-1/images/distribution-data.png")
 
     # Question 2B
 
     # Reprenons les paires de mesures, mais entraÃ®nons cette fois
     # diffÃ©rents modÃ¨les demandÃ©s avec chaque paire
+    # cmpt = 1 # Cmpt pour les graphs
     for (f1, f2) in pairs:
 
         # TODO Q2B
@@ -134,6 +136,7 @@ if __name__ == '__main__':
             # Obtenez et affichez son erreur (1 - accuracy)
             # Stockez la valeur de cette erreur dans la variable err
             err = 1-sum(clf.predict(data_subset) == data.target)/data.target.size
+            print("Error du classieur " + clf.__class__.__name__ + ": " + str(err))
 
             # TODO Q2B
             # Utilisez la grille que vous avez crÃ©Ã©e plus haut
@@ -154,12 +157,16 @@ if __name__ == '__main__':
                 print("[ATTENTION] Votre code pour la question 2B ne produit pas les performances attendues! " +
                       "Le taux d'erreur maximal attendu est de {0:.3f}, mais l'erreur rapportÃ©e dans votre code est de {1:.3f}!".format(
                           ERRMAX_Q2B, err))
+        # fig.savefig(
+            #"/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-1/images/2b-" + str(
+                # cmpt) + ".png")
+        # cmpt = cmpt + 1
 
         _times.append(time.time())
         checkTime(TMAX_Q2B, "2B")
 
         # On affiche les graphiques
-        pyplot.show()
+        fig.show()
 
     # Question 2C
     # Note : Q2C (i) peut Ãªtre rÃ©pondue en utilisant le code prÃ©cÃ©dent
@@ -201,7 +208,7 @@ if __name__ == '__main__':
     # avec un K-fold avec k=3.
     # Vous devez rÃ©pÃ©ter le K-folding 10 fois
     # Stockez l'erreur moyenne sur ces 10 itÃ©rations dans une variable nommÃ©e avgError
-    erreur = np.zeros(10)
+    erreur = []
     rkf = RepeatedKFold(n_splits=3, n_repeats=10, random_state=42)
     for train_index, test_index in rkf.split(data.data):
         X_train, X_test = data.data[train_index], data.data[test_index]
@@ -209,9 +216,10 @@ if __name__ == '__main__':
 
         classifieur_qda = QuadraticDiscriminantAnalysis()
         classifieur_qda.fit(X_train, y_train)
-        erreur[i] = 1 - sum(classifieur_qda.predict(X_test) == y_test) / y_test.size
+        temp = 1 - sum(classifieur_qda.predict(X_test) == y_test) / y_test.size
+        erreur.append(temp)
 
-    avgError = erreur.mean()
+    avgError = numpy.mean(erreur)
 
     _times.append(time.time())
     checkTime(TMAX_Q2Ciii, "2Ciii")
@@ -271,5 +279,6 @@ if __name__ == '__main__':
     checkTime(TMAX_Q2D, "2D")
 
     pyplot.show()
-
+    #fig.savefig(
+        # "/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-1/images/circles.png")
 # N'Ã©crivez pas de code Ã  partir de cet endroit

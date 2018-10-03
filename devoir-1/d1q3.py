@@ -104,7 +104,7 @@ class ClassifieurAvecRejet():
                 err[obs] = self._lambda
             else:
                 err[obs] = 1 - (predictions[obs] == y[obs])
-        return err.sum(axis=0)
+        return err.sum(axis=0)/y.__len__()
         pass
 
 
@@ -125,6 +125,7 @@ if __name__ == "__main__":
 
     # Utilisons cette liste de paires pour tester le classifieur
     # avec diffÃ©rents lambda
+    #cmpt=0
     for (f1, f2) in pairs:
         # TODO Q3D
         # CrÃ©ez ici un sous-dataset contenant seulement les
@@ -161,6 +162,7 @@ if __name__ == "__main__":
             # Stockez la valeur de cette erreur dans la variable err
 
             err = clf.score(data_subset, data.target)
+            print(err)
 
             # TODO Q3D
             # Utilisez la grille que vous avez crÃ©Ã©e plus haut
@@ -183,5 +185,7 @@ if __name__ == "__main__":
 
         # On affiche les graphiques
         pyplot.show()
-
+        #fig.savefig(
+            #"/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-1/images/3d-"+str(cmpt)+".png")
+        #cmpt=cmpt+1
 # N'Ã©crivez pas de code Ã  partir de cet endroit
