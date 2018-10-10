@@ -30,7 +30,7 @@ Created on Mon Oct  8 19:05:39 2018
 ###############################################################################
 
 import time
-import numpy
+import numpy as np
 
 from matplotlib import pyplot
 
@@ -66,7 +66,10 @@ def pdf(X):
 # ComplÃ©tez la fonction sample(n), qui gÃ©nÃ¨re n
 # donnÃ©es suivant la distribution mentionnÃ©e dans l'Ã©noncÃ©
 def sample(n):
-    return
+    X = np.concatenate((np.random.normal(0, 1, int(0.4 * n)),
+                        np.random.normal(5, 1, int(0.6 * n))))[:, np.newaxis]
+    
+    return X
 
 
 if __name__ == '__main__':
@@ -79,7 +82,22 @@ if __name__ == '__main__':
     # de cette distribution Ã©chantillonÃ©e, en utilisant 25 bins,
     # dans le domaine [-5, 10].
     # Sur les mÃªmes graphiques, tracez Ã©galement la fonction de densitÃ© rÃ©elle.
-
+    X1 = sample(50)
+    X2 = sample(10000)
+    
+    X_plot = np.linspace(-5, 10, 1000)[:, np.newaxis]
+    bins = np.linspace(-5, 10, 25)
+    
+    fig, ax = pyplot.subplots(2, 1, sharex=True, sharey=True)
+    fig.subplots_adjust(hspace=0.4, wspace=0.05)
+    
+    ax[0].hist(x=X1, bins=bins, range=(-5,10), facecolor = 'royalblue', normed=True)
+    ax[0].set_title("Histograme de la densité mélange avec n = 50")
+    ax[0].plot(X_plot, pdf(X_plot))
+    
+    ax[1].hist(x=X2, bins=bins, range=(-5,10), facecolor = 'royalblue', normed=True)
+    ax[1].set_title("Histograme de la densité mélange avec n = 10 000")
+    ax[1].plot(X_plot, pdf(X_plot))
 
     # Affichage du graphique
     _times.append(time.time())
@@ -97,11 +115,59 @@ if __name__ == '__main__':
     # estimÃ©es avec des tailles de noyau (bandwidth) de {0.3, 1, 2, 5}, dans
     # la mÃªme figure, mais tracÃ©es avec des couleurs diffÃ©rentes.
     
+#    def is_within_the_hypercube(u):
+#        vec = np.array(u)
+#        np.place(vec, abs(vec)<1, 1)
+#        np.place(vec, abs(vec)>1, 0)
+#        return vec
+#        
+#    def densite_estime(X, data, h):
+#        N = data.shape[0]
+#        return((1/2*N*h) * sum(is_within_the_hypercube((X-data)/h)))
+#    
+#    def hist_noyaux_boxcar(vec_X, data, bandwidth):
+#        Y_densite = []
+#        for i in range(vec_X.shape[0]):
+#            Y_densite.append(densite_estime(vec_X[i,:], data, bandwidth))
+#        return Y_densite/sum(Y_densite)
+    
+    X_plot = np.linspace(-5, 10, 1000)[:, np.newaxis]
+    kde_1 = KernelDensity(kernel='tophat', bandwidth=0.3).fit(X1)
+    kde_2 = KernelDensity(kernel='tophat', bandwidth=1).fit(X1)
+    kde_3 = KernelDensity(kernel='tophat', bandwidth=2).fit(X1)
+    kde_4 = KernelDensity(kernel='tophat', bandwidth=5).fit(X1)
+    
+    kde_1_2 = KernelDensity(kernel='tophat', bandwidth=0.3).fit(X2)
+    kde_2_2 = KernelDensity(kernel='tophat', bandwidth=1).fit(X2)
+    kde_3_2 = KernelDensity(kernel='tophat', bandwidth=2).fit(X2)
+    kde_4_2 = KernelDensity(kernel='tophat', bandwidth=5).fit(X2)
+    
+    fig, ax = pyplot.subplots(2, 1, sharex=True, sharey=True)
+    fig.subplots_adjust(hspace=0.4, wspace=0.05)
+    
+    ax[0].plot(X_plot, np.exp(kde_1.score_samples(X_plot)), label="bandwidth=0.3")
+    ax[0].plot(X_plot, np.exp(kde_2.score_samples(X_plot)), label="bandwidth=1")
+    ax[0].plot(X_plot, np.exp(kde_3.score_samples(X_plot)), label="bandwidth=2")
+    ax[0].plot(X_plot, np.exp(kde_4.score_samples(X_plot)), label="bandwidth=5")
+    ax[0].legend(loc="upper left", fontsize="x-small")
+    ax[0].set_xlim((-5,10))
+    ax[0].set_title("Histograme de la densité mélange avec n = 50")
+    
+    ax[1].plot(X_plot, np.exp(kde_1_2.score_samples(X_plot)), label="bandwidth=0.3")
+    ax[1].plot(X_plot, np.exp(kde_2_2.score_samples(X_plot)), label="bandwidth=1")
+    ax[1].plot(X_plot, np.exp(kde_3_2.score_samples(X_plot)), label="bandwidth=2")
+    ax[1].plot(X_plot, np.exp(kde_4_2.score_samples(X_plot)), label="bandwidth=5")
+    ax[1].legend(loc="upper left", fontsize="x-small")
+    ax[1].set_xlim((-5,10))
+    ax[1].set_title("Histograme de la densité mélange avec n = 10 000")
+    
 
     # Affichage du graphique
     _times.append(time.time())
     checkTime(TMAX_Q1B, "1B")
     pyplot.show()
+    
+    fig.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-2/images/q1-b.png", quality=95)
 
 
 
