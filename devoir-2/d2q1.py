@@ -103,6 +103,8 @@ if __name__ == '__main__':
     _times.append(time.time())
     checkTime(TMAX_Q1A, "1A")
     pyplot.show()
+    
+    # fig.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-2/images/q1-a.png", quality=95)
 
 
     # Question 1B
