@@ -169,7 +169,7 @@ if __name__ == '__main__':
     checkTime(TMAX_Q1B, "1B")
     pyplot.show()
     
-    fig.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-2/images/q1-b.png", quality=95)
+    # fig.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-2/images/q1-b.png", quality=95)
 
 
 

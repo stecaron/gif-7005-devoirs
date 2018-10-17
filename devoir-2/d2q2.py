@@ -144,7 +144,6 @@ class DiscriminantLineaire:
         # Ã€ ce stade, la variable w devrait contenir les poids entraÃ®nÃ©s
         # On les copie dans une variable membre pour les conserver
         self.w = w
-        print(iteration)
     
     def predict(self, X):
         # TODO Q2B
@@ -256,6 +255,8 @@ if __name__ == '__main__':
     z = discriminant_lineaire_2_classes.predict(numpy.c_[xx.ravel(), yy.ravel()])
     z = z.reshape(xx.shape)
     fig.contourf(xx, yy, z, alpha=.25)
+    
+    # fig.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-2/images/q2-c1.png", quality=95)
 
 
     _times.append(time.time())
@@ -290,12 +291,14 @@ if __name__ == '__main__':
     z = z.reshape(xx.shape)
     fig.contourf(xx, yy, z, alpha=.25)
 
+    # fig.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-2/images/q2-c2.png", quality=95)
 
 
     _times.append(time.time())
     checkTime(TMAX_Q2Bdisp, "2C")
     
     pyplot.show()
+    
 
 
 
@@ -414,6 +417,28 @@ if __name__ == '__main__':
     # pour k=1, le second la prÃ©cision pour k=3, et ainsi de suite.
     scoresUniformWeights = []
     scoresDistanceWeights = []
+    
+    k_values = [1, 3, 5, 7, 11, 13, 15, 25, 35, 45]
+    
+    for k in k_values:
+        clf_uniform = KNeighborsClassifier(n_neighbors=k, weights='uniform')
+        clf_distance = KNeighborsClassifier(n_neighbors=k, weights='distance')
+        loo = LeaveOneOut()
+        accuracy_uniform = []
+        accuracy_distance = []
+        for train_index, test_index in loo.split(X_breast_scaled):
+            X_train, X_test = X_breast_scaled[train_index], X_breast_scaled[test_index]
+            y_train, y_test = data_breast.target[train_index], data_breast.target[test_index]
+            
+            # On entraine le modele sur le subset
+            clf_uniform.fit(X_train, y_train)
+            accuracy_uniform.append(clf_uniform.score(X_test, y_test))
+            
+            clf_distance.fit(X_train, y_train)
+            accuracy_distance.append(clf_distance.score(X_test, y_test))
+        
+        scoresUniformWeights.append(numpy.mean(accuracy_uniform))
+        scoresDistanceWeights.append(numpy.mean(accuracy_distance))
 
 
     _times.append(time.time())
@@ -423,6 +448,15 @@ if __name__ == '__main__':
     # Produisez un graphique contenant deux courbes, l'une pour weights=uniform
     # et l'autre pour weights=distance. L'axe x de la figure doit Ãªtre le nombre
     # de voisins et l'axe y la performance en leave-one-out
+    
+    fig = pyplot
+    fig.plot(k_values, scoresUniformWeights, label='uniform', linewidth=2, color="red")
+    fig.plot(k_values, scoresDistanceWeights, label='distance', linewidth=2, color="blue")
+    fig.xlabel("k")
+    fig.ylabel("Accuracy moyenne")
+    fig.legend()
+    
+    #fig.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-2/images/q2-e1.png", quality=95)
 
     pyplot.show()
 
@@ -478,8 +512,11 @@ if __name__ == '__main__':
     fig = pyplot
     fig.plot(k_values, scoresUniformWeights, label='uniform', linewidth=2, color="red")
     fig.plot(k_values, scoresDistanceWeights, label='distance', linewidth=2, color="blue")
+    fig.xlabel("k")
+    fig.ylabel("Accuracy moyenne")
+    fig.legend()
     
-    
+    #fig.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-2/images/q2-e2.png", quality=95)
 
     pyplot.show()
     
