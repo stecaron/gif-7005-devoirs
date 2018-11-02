@@ -15,11 +15,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Question 1
 
-Dans cette question, l'objectif est d'estimer de manière non-parametrique la densité d'une loi de mélange entre deux lois normales.
+Dans cette question, l'objectif est d'estimer de manière non-paramétrique la densité d'une loi de mélange entre deux lois normales.
 
 ## Partie a
 
-Dans la première partie, nous estimerons la densité de la loi mélange par la méthode de l'histogramme. La figure 1 illustre la densité de la loi en échantillonant 50 et 10 000 observations de la loi mélange.
+Dans la première partie, nous estimerons la densité de la loi mélange par la méthode de l'histogramme. La figure 1 illustre la densité de la loi en échantillonnant 50 et 10 000 observations de la loi mélange.
 
 ![Estimation de la densité par histogramme avec 50 et 10 000 observations.](images/q1-a.png)
 
@@ -27,11 +27,11 @@ Dans la figure 1, la ligne orange correspond à la courbe de densité réelle de
 
 ## Partie b
 
-Dans cette partie, nous estimerons encore la densité de la loi de mélande, mais cette fois-ci avec une estimation par noyau *boxcar*. Cette méthode d'estimation n'est pas continue, mais elle évite de devoir poser une origine alors qu'une fenêtre est appliquée à chaque valeur du support. La figure 2 illustre l'estimation de la densité avec 50 et 10 000 observations selon différentes valeurs de *bandwidth* ($h$). Cette dernière valeur, contrôle la largeur de la fenêtre autour de laquelle nous allons considérer les données autour d'un point $x$ du support.
+Dans cette partie, nous estimerons encore la densité de la loi de mélange, mais cette fois-ci avec une estimation par noyau *boxcar*. Cette méthode d'estimation n'est pas continue, mais elle évite de devoir poser une origine alors qu'une fenêtre est appliquée à chaque valeur du support. La figure 2 illustre l'estimation de la densité avec 50 et 10 000 observations selon différentes valeurs de *bandwidth* ($h$). Cette dernière valeur, contrôle la largeur de la fenêtre autour de laquelle nous allons considérer les données autour d'un point $x$ du support.
 
 ![Estimation de la densité par noyau *boxcar* avec 50 et 10 000 observations selon différentes valeurs de *bandwidth*.](images/q1-b.png)
 
-À partir de la figure 2, on peut remarquer 2 choses. Premièrement, moins il y a d'observations, plus il y a de variations dans les estimations de la densité pour les valeurs du support. Cela se voit par les escaliers plus prononcés dans la figure avec 50 observations seulement. Deuxièment, plus la fenêtre d'estimation (*bandwidth*) est grande, plus la densité est constante sur le support. Cela fait du sens puisqu'avec une grande fenêtre, on considère beaucoup de données pour estimer la densité en un point. Si la fenêtre est petite, on donnne plus d'importance à la densité locale ce qui fait en sorte qu'on remarque davantage les deux cloches normales. 
+À partir de la figure 2, on peut remarquer 2 choses. Premièrement, moins il y a d'observations, plus il y a de variations dans les estimations de la densité pour les valeurs du support. Cela se voit par les escaliers plus prononcés dans la figure avec 50 observations seulement. Deuxièmement, plus la fenêtre d'estimation (*bandwidth*) est grande, plus la densité est constante sur le support. Cela fait du sens puisqu'avec une grande fenêtre, on considère beaucoup de données pour estimer la densité en un point. Si la fenêtre est petite, on donne plus d'importance à la densité locale ce qui fait en sorte qu'on remarque davantage les deux cloches normales. 
 
 ## Partie c
 
@@ -54,7 +54,7 @@ Il faut donc calculer:
 $$
 \triangledown_w E = \Bigg[\frac{\partial E}{\partial w_0}, \frac{\partial E}{\partial w_1}, ..., \frac{\partial E}{\partial w_D} \Bigg]
 $$
-Ces dérivées partielles nous indiqueront les ajustements à apporter sur chacun des paramètres $w_i$ pour chacune des itérations effectuées lors de la descentre du gradient. La mise à jour pourra s'effectuer comme suit:
+Ces dérivées partielles nous indiqueront les ajustements à apporter sur chacun des paramètres $w_i$ pour chacune des itérations effectuées lors de la descente du gradient. La mise à jour pourra s'effectuer comme suit:
 
 $$
 w_i = w_i+\Delta w_i
@@ -104,11 +104,11 @@ Voir le code.
 
 ## Partie c
 
-Dans cette partie, nous allons tester le discriminant que nous avons définit à la partie a) et implémenté dans la partie c). Tout d'abord, nous allons tester la performance de celui-ci sur un jeu de données à deux classes. Pour ce jeu de données, le discriminant linéaire a une *accuracy* de 98%. Cette performance est calculée sur la totolité du jeu de données. La figure 3 illustre les zones de décision calculées par le discriminant. 
+Dans cette partie, nous allons tester le discriminant que nous avons définit à la partie a) et implémenté dans la partie b). Tout d'abord, nous allons tester la performance de celui-ci sur un jeu de données à deux classes. Pour ce jeu de données, le discriminant linéaire a une *accuracy* de 98%. Cette performance est calculée sur la totalité du jeu de données. La figure 3 illustre les zones de décision calculées par le discriminant. 
 
 ![Zones de décision du discriminant linéaire sur un jeu de données à 2 classes.](images/q2-c1.png)
 
-On remarque que les zones définies par le discriminant à 2 classes classifient très bien le jeu de données. Ensuite, nous allons tester la performance du même discriminant linéaire, mais cette fois-ci, sur un jeu de données à 3 classes. Étant donné que notre modèle permet de discriminer une classe versus une autre, nous allons utiliser l'approche un contre tous afin d'itérer sur chaque combinaison de classe et ainsi se ramener à plusieurs classifications binaires. La figure 4 illustre les zones de décisions tracées par ce classfieur un contre tous, qui obtient une *accuracy* de 84% sur la totalité du jeu de données. 
+On remarque que les zones définies par le discriminant à 2 classes classifient très bien le jeu de données. Par la suite, nous allons tester la performance du même discriminant linéaire, mais cette fois-ci, sur un jeu de données à 3 classes. Étant donné que notre modèle permet de discriminer une classe versus une autre, nous allons utiliser l'approche un contre tous afin d'itérer sur chaque combinaison de classes et ainsi se ramener à plusieurs classifications binaires. La figure 4 illustre les zones de décisions tracées par ce classifieur un contre tous, qui obtient une *accuracy* de 84% sur la totalité du jeu de données. 
 
 ![Zones de décision du discriminant linéaire sur un jeu de données à 3 classes.](images/q2-c2.png)
 
@@ -119,18 +119,18 @@ On remarque que les zones de décisions séparent relativement bien le jeu de do
 Dans cette partie, nous allons comparer les résultats de notre discriminant linéaire avec d'autres classifieurs. En effet, nous allons également tester:
 
 - La méthode paramétrique de la loi normale multivariée
-- Descente du gradient avec le critère du perceptron
-- Regression logistique
+- La descente du gradient avec le critère du perceptron
+- La régression logistique
 
-De plus, nous allons tester ces modèles sur différents jeux de données à 2 et à 3 classes. Nous allons également avoir une meilleure idée de la performance réelle des modèles alors que nous allons estimer l'*accuracy* moyenne par validation croisée (K = 3 plis). 
+De plus, nous allons tester ces modèles sur différents jeux de données à 2 et à 3 classes. Nous allons avoir une meilleure idée de la performance réelle des modèles puisque que nous allons estimer l'*accuracy* moyenne par validation croisée (K = 3 plis). 
 
 ### Comparaison des paramètres entre les modèles
 
-Comme nous l'avons définit dans les premières parties, notre discriminant linéaire possède $D+1$ paramètres à estimer, soit les $w_i$ pour $i=0, ..., D$. Ces paramètres sont estimés par une descente du gradient qui requiert 3 autres hyper-paramètres, soit les paramètres $\epsilon$, le nombre d'itérations maximal et $\eta$. Les deux premiers servent en quelque sorte de critères d'arrêt pour la descente du gradient. En effet, $\epsilon$ contrôle l'amélioration minimale pour continuer d'itérer, alors que le nombre maximum d'itérations contrôle le nombre d'ajustements maximal apporté sur les $w_i$. Le paramètre $\eta$ contrôle pour sa part la vitesse de la descente du gradient. C'est un facteur qu'on applique aux ajustement afin de ne pas faire de trop "gros" pas vers la valeur à atteindre.
+Comme nous l'avons définit dans les premières parties, notre discriminant linéaire possède $D+1$ paramètres à estimer, soit les $w_i$ pour $i=0, ..., D$. Ces paramètres sont estimés par une descente du gradient qui requiert 3 autres hyper-paramètres, soit les paramètres $\epsilon$, le nombre d'itérations maximal et $\eta$. Les deux premiers servent en quelque sorte de critères d'arrêt pour la descente du gradient. En effet, $\epsilon$ contrôle l'amélioration minimale pour continuer d'itérer, alors que le nombre maximum d'itérations contrôle le nombre d'ajustements maximal apporté sur les $w_i$. Le paramètre $\eta$ contrôle pour sa part la vitesse de la descente du gradient. C'est un facteur qu'on applique aux ajustements afin de ne pas faire de trop "gros pas"" vers la valeur à atteindre.
 
 Pour le modèle basée sur la méthode paramétrique de la loi normal multivariée, l'algorithme doit trouver les paramètres $\mu$ et $\Sigma$ de la loi normale. La matrice de covariance est toutefois partagée entre les classes, ce qui réduit le nombre de paramètre à estimer. C'est d'ailleurs pour cette raison qu'on parle d'un discriminant linéaire, et non quadratique dans le cas ou les matrices de covariances sont spécifiques à chaque classe.
 
-La méthode basée sur le perceptron ressemble beaucoup à notre discrimant linéaire décrit dans les premières parties de la question. Il estime les paramètres $w_i$ par une descente du gradient, mais le critère d'erreur est définit différemment. Les hyper-paramètres sont d'ailleurs très similaires à ceux décrits plus tôt.
+La méthode basée sur le perceptron ressemble beaucoup à notre discriminant linéaire décrit dans les premières parties de la question. Il estime les paramètres $w_i$ par une descente du gradient, mais le critère d'erreur est définit différemment. Les hyper-paramètres sont d'ailleurs très similaires à ceux décrits plus tôt.
 
 Pour finir, la régression logistique trouve des valeurs de $\beta_i$ à appliquer aux différentes variables de $X$. Cela ressemble beaucoup aux $w_i$ calculés dans la méthode du perceptron. Toutefois, les paramètres ne sont pas estimés par une descente du gradient, mais plutôt par la méthode du maximum de vraisemblance, qu'on peut d'ailleurs appliquée en raison de certaines hypothèses faites sur le modèles.
 
@@ -170,7 +170,7 @@ $$
  \hline
 \end{tabular}
 $$
-En comparant les performances sur les deux jeux de données, on remarque que le discriminant linéaire et la méthode basée sur le perceptron sont beaucoup moins performantes sur un jeu de données à 3 classes. La méthode basée sur la loi normale multivariée semble être beaucoup plus robuste. De plus, le temps de calcul pour celle-ci est très rapide pour ces jeux de données. La regression logistique possède également d'assez bons résultats sur les deux jeux de données. De plus, le nombre de paramètres à estimer par cette méthode est moins grand que pour la méthode basée sur la loi normale multivariée.
+En comparant les performances sur les deux jeux de données, on remarque que le discriminant linéaire et la méthode basée sur le perceptron sont beaucoup moins performantes sur un jeu de données à 3 classes. La méthode basée sur la loi normale multivariée semble être beaucoup plus robuste. De plus, le temps de calcul pour celle-ci est très rapide pour ces jeux de données. La régression logistique possède également d'assez bons résultats sur les deux jeux de données. De plus, le nombre de paramètres à estimer par cette méthode est moins grand que pour la méthode basée sur la loi normale multivariée.
 
 ## Partie e
 
