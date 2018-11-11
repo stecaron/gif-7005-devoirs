@@ -100,6 +100,8 @@ if __name__ == "__main__":
     # diffÃ©rente des fonctions load_*, assurez-vous que vous utilisez
     # correctement les donnÃ©es et qu'elles sont du bon type.
    
+    data_pendigits = fetchPendigits()
+    X = minmax_scale(data_pendigits[0])
     
     # TODO Q2B
     # SÃ©parez le jeu de donnÃ©es Pendigits en deux sous-jeux: entraÃ®nement (5000) et
@@ -108,6 +110,9 @@ if __name__ == "__main__":
     # d'hyper-paramÃ¨tres la plus performante. Ce jeu de test ne doit Ãªtre utilisÃ©
     # qu'Ã  la toute fin, pour rapporter les rÃ©sultats finaux en gÃ©nÃ©ralisation.
 
+    X_train, X_test, y_train, y_test = train_test_split(
+    X, data_pendigits[1], test_size=5992/(5000+5992), random_state=42)
+        
 
     # TODO Q2B
     # Pour chaque classifieur :
@@ -125,11 +130,38 @@ if __name__ == "__main__":
     # l'ordre dans lequel ils sont Ã©numÃ©rÃ©s plus haut, en insÃ©rant votre code
     # d'optimisation entre les commentaires le spÃ©cifiant
     
-
     
     _times.append(time.time())
     # TODO Q2B
     # Optimisez ici la paramÃ©trisation du kPP
+    
+    # Definion des grilles d'hyperparametres
+    n_neighbors_possible = [1, 3, 5, 10, 20, 50, 100]
+    weights_possible = ["uniform", "distance"]
+    
+    for n_neighbors, weights in itertools.product(n_neighbors_possible, weights_possible):
+        
+        # On initialise le classfieur kPP avec les hyperparametres de la grillle
+        classifieur_kpp = KNeighborsClassifier(n_neighbors=n_neighbors, weights = weights)
+        
+        # On fit avec la CV à 5 plis
+        accuracy = []
+
+        kf = KFold(n_splits=5, random_state=42, shuffle=True)
+        for train_index, test_index in kf.split(X_train):
+            X_train_cv, X_validation = X_train[train_index], X_train[test_index]
+            y_train_cv, y_validation = y_train[train_index], y_train[test_index]
+            
+            # On entraine le modele
+            classifieur_kpp.fit(X_train_cv, y_train_cv)
+            temp = sum(classifieur_kpp.predict(X_validation) == y_validation) / y_validation.size
+            accuracy.append(temp)
+            
+            
+        # On calcule l'erreur moyenne pour ce classifieur
+        avgAccuracy = numpy.mean(accuracy)
+        print("Number of neighbors: "+str(n_neighbors)+", Weight: "+str(weights)+", Mean accuray :"+str(avgAccuracy))
+        
    
 
     
@@ -137,27 +169,95 @@ if __name__ == "__main__":
     checkTime(TMAX_KNN, "K plus proches voisins")
     # TODO Q2B
     # Optimisez ici la paramÃ©trisation du SVM Ã  noyau gaussien
-   
 
-
-    _times.append(time.time())
-    checkTime(TMAX_SVM, "SVM")
-    # TODO Q2B
-    # Optimisez ici la paramÃ©trisation du perceptron multicouche
-    # Note : il se peut que vous obteniez ici des "ConvergenceWarning"
-    # Ne vous en souciez pas et laissez le paramÃ¨tre max_iter Ã  sa
-    # valeur suggÃ©rÃ©e dans l'Ã©noncÃ© (100)
+    # Definion des grilles d'hyperparametres
+    C_possible = [0.01, 0.1, 1, 10, 100, 1000]
+    gamma_possible = [0.1, 0.2, 0.5]
     
+    for C, gamma in itertools.product(C_possible, gamma_possible):
+        
+        # On initialise le classfieur kPP avec les hyperparametres de la grille
+        classifieur_svm = SVC(C=C, kernel='rbf', gamma=gamma)
+        
+        # On fit avec la CV à 5 plis
+        accuracy = []
+
+        kf = KFold(n_splits=5, random_state=42, shuffle=True)
+        for train_index, test_index in kf.split(X_train):
+            X_train_cv, X_validation = X_train[train_index], X_train[test_index]
+            y_train_cv, y_validation = y_train[train_index], y_train[test_index]
+            
+            # On entraine le modele
+            classifieur_svm.fit(X_train_cv, y_train_cv)
+            temp = sum(classifieur_svm.predict(X_validation) == y_validation) / y_validation.size
+            accuracy.append(temp)
+            
+            
+        # On calcule l'erreur moyenne pour ce classifieur
+        avgAccuracy = numpy.mean(accuracy)
+        print("C : "+str(C)+", Gamma: "+str(gamma)+", Mean accuray :"+str(avgAccuracy))
+           
 
 
-
-    _times.append(time.time())
-    checkTime(TMAX_PERCEPTRON, "SVM")
+        _times.append(time.time())
+        checkTime(TMAX_SVM, "SVM")
+        # TODO Q2B
+        # Optimisez ici la paramÃ©trisation du perceptron multicouche
+        # Note : il se peut que vous obteniez ici des "ConvergenceWarning"
+        # Ne vous en souciez pas et laissez le paramÃ¨tre max_iter Ã  sa
+        # valeur suggÃ©rÃ©e dans l'Ã©noncÃ© (100)
+        
+        # Definion des grilles d'hyperparametres
+        hidden_layer_sizes_possible = [ 10, 100, 500, 1000]
+        activation_possible = ['relu', 'identity', 'tanh', 'logistic']
+        
+        for hidden_layer_sizes, activation in itertools.product(hidden_layer_sizes_possible, activation_possible):
+            
+            # On initialise le classfieur kPP avec les hyperparametres de la grille
+            classifieur_mlp = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes,
+                                            activation=activation)
+            
+            # On fit avec la CV à 5 plis
+            accuracy = []
+    
+            kf = KFold(n_splits=5, random_state=42, shuffle=True)
+            for train_index, test_index in kf.split(X_train):
+                X_train_cv, X_validation = X_train[train_index], X_train[test_index]
+                y_train_cv, y_validation = y_train[train_index], y_train[test_index]
+                
+                # On entraine le modele
+                classifieur_mlp.fit(X_train_cv, y_train_cv)
+                temp = sum(classifieur_mlp.predict(X_validation) == y_validation) / y_validation.size
+                accuracy.append(temp)
+                
+                
+            # On calcule l'erreur moyenne pour ce classifieur
+            avgAccuracy = numpy.mean(accuracy)
+            print("Hidden layer sizes : "+str(hidden_layer_sizes)+", Activation: "+str(activation)+", Mean accuray :"+str(avgAccuracy))
+               
+    
+    
+        _times.append(time.time())
+        checkTime(TMAX_PERCEPTRON, "SVM")
     
 
     # TODO Q2B
     # Ã‰valuez les performances des meilleures paramÃ©trisations sur le jeu de test
     # et rapportez ces performances dans le rapport
+    
+    model_final_kpp = KNeighborsClassifier(n_neighbors=3, weights='distance')
+    model_final_svm = SVC(C=10, gamma=0.5)
+    model_final_mlp = MLPClassifier(hidden_layer_sizes=100, activation='relu')
+    
+    # On reentraine les modeles sur le jeu de donnees entrainement complet
+    model_final_kpp.fit(X_train, y_train)
+    model_final_svm.fit(X_train, y_train)
+    model_final_mlp.fit(X_train, y_train)
+    
+    print('Accuray for kNN on test: '+str(model_final_kpp.score(X_test, y_test)))
+    print('Accuray for SVM on test: '+str(model_final_svm.score(X_test, y_test)))
+    print('Accuray for MLP on test: '+str(model_final_mlp.score(X_test, y_test)))
+    
     
     
 

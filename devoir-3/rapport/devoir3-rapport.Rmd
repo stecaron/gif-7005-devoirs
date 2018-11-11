@@ -1,0 +1,23 @@
+---
+title: "Devoir 3: Rapport"
+subtitle: "GIF-7005: Introduction à l'apprentissage machine"
+author: "Stéphane Caron"
+date: '12 Novembre 2018'
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 4
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 1
+
+# Question 2
+
+## Partie a
+## Partie b
+
+# Question 3
