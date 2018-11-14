@@ -254,6 +254,10 @@ if __name__ == "__main__":
     model_final_svm.fit(X_train, y_train)
     model_final_mlp.fit(X_train, y_train)
     
+    print('Accuray for kNN on train: '+str(model_final_kpp.score(X_train, y_train)))
+    print('Accuray for SVM on train: '+str(model_final_svm.score(X_train, y_train)))
+    print('Accuray for MLP on train: '+str(model_final_mlp.score(X_train, y_train)))
+    
     print('Accuray for kNN on test: '+str(model_final_kpp.score(X_test, y_test)))
     print('Accuray for SVM on test: '+str(model_final_svm.score(X_test, y_test)))
     print('Accuray for MLP on test: '+str(model_final_mlp.score(X_test, y_test)))
