@@ -1,2 +1,6 @@
 .idea
 .Rproj.user
+
+#Ignore data
+devoir-4/data/**
+
