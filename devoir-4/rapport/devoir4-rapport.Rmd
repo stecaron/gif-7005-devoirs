@@ -1,0 +1,39 @@
+---
+title: "Devoir 4: Rapport"
+subtitle: "GIF-7005: Introduction à l'apprentissage machine"
+author: "Stéphane Caron"
+date: '5 Décembre 2018'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 1
+
+Dans cette question, il faut entraîner un réseau de neurones à convolutions en utilisant la librarie *PyTorch*. Le modèle devra être entraîné pour faire une classification binaire permettant de reconnaître la présence de volcans sur des photos de la planète Vénus.
+
+Après avoir implémenté l'architecture proposée dans l'énoncé du problème, le modèle a atteint une précision finale sur le jeu de données test de $86.8\%$ après 10 *epochs* d'entraînement. Voici la matrice de confusion pour le jeu de données test:
+
+$$
+\begin{tabular}{ |c|c|  }
+ \hline
+ 0.972 & 0.028 \\
+ \hline
+ 0.224 & 0.776 \\
+ \hline
+\end{tabular}
+$$
+
+Voir le code pour plus de détails sur l'implémentation.
+
+# Question 2
+
+Pour la deuxième question, il fallait faire du transfert de représentation en utilisant un réseau déjà entraîné sur un plus gros jeu de données. Dans notre cas, le modèle en question est *ResNet-18* entraîné sur le jeu de données *ImageNet*. Il fallait donc utiliser l'architecture et les poids de *ResNet-18* pour classifier 16 classes de types de blocs lego. Pour ce faire, il a été nécessaire de modifier la couche de sortie du modèle afin de discriminer 16 classes d'images, et non 1000 comme dans *ImageNet*.
+
+Dans un premier temps, nous avons entraîné le modèle, mais sans préalablement initialiser les poids calculés sur *ImageNet*. Dans ce cas-ci, nous avons obtenu une précision $56.8\%$ en près de 25 minutes d'entraînement. Cet entraînement correspond en fait a 1 seule *epoch*.
+
+Dans un deuxième temps, nous avons entraîné le modèle, mais cette fois-ci en initialisant les poids calculés sur *ImageNet*. En procédant ainsi, le temps d'entraînement et beaucoup plus court (environ 10 minutes) et les performances sont bien meilleures ($82.2\%$ sur le jeu de données test). Cela en en grande partie à cause les poids calculés sur le jeu de données *ImageNet*, permettent d'introduire une certaine capacité à priori de reconnaître des composantes d'une image.
+
+Voir le code pour plus de détails sur l'implémentation.

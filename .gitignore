@@ -4,3 +4,4 @@
 #Ignore data
 devoir-4/data/**
 
+*.pt
