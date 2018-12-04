@@ -50,7 +50,7 @@ SECTION = 'GRAD'
 
 # TODO Logistique
 # Mettre son numÃ©ro d'Ã©quipe ici
-NUMERO_EQUIPE = -1
+NUMERO_EQUIPE = 24
 
 # CrÃ©e la random seed
 RANDOM_SEED = CODES_DE_SECTION[SECTION] + NUMERO_EQUIPE
@@ -71,16 +71,26 @@ class VolcanoesNet(nn.Module):
         # DÃ©finir ici les couches de convolution
         # comme il est dÃ©crit dans l'Ã©noncÃ© du
         # devoir
-
+        self.conv1 = VolcanoesConv(ch_in=1, ch_out=32, kernel=5)
+        self.conv2 = VolcanoesConv(ch_in=32, ch_out=64, kernel=3)
+        self.conv3 = VolcanoesConv(ch_in=64, ch_out=64, kernel=3)
+        self.conv4 = VolcanoesConv(ch_in=64, ch_out=64, kernel=3)
+        self.conv5 = VolcanoesConv(ch_in=64, ch_out=64, kernel=3)
 
         # TODO Q1A
         # DÃ©finir les couches de normalisation
         # permettant de maintenir les valeurs
         # du rÃ©seau Ã  des valeurs raisonnables
+        self.norm1 = nn.BatchNorm2d(32)
+        self.norm2 = nn.BatchNorm2d(64)
+        self.norm3 = nn.BatchNorm2d(64)
+        self.norm4 = nn.BatchNorm2d(64)
+        self.norm5 = nn.BatchNorm2d(64)
 
 
         # TODO Q1A
         # DÃ©ninir la couche linÃ©aire de sortie
+        self.lin1 = nn.Linear(64, 1)
 
 
     def conv_forward(self, x):
@@ -88,7 +98,11 @@ class VolcanoesNet(nn.Module):
         # Ã‰crire les lignes de code pour l'infÃ©rence
         # des couches de convolution, avant l'average 
         # pooling
-
+        y = F.relu(self.norm1(self.conv1(x)))
+        y = F.relu(self.norm2(self.conv2(y)))
+        y = F.relu(self.norm3(self.conv3(y)))
+        y = F.relu(self.norm4(self.conv4(y)))
+        y = F.relu(self.norm5(self.conv5(y)))
 
         return y
 
@@ -140,7 +154,7 @@ if __name__ == '__main__':
     # TODO Q1C 
     # Instancier un rÃ©seau VolcanoesNet
     # dans une variable nommÃ©e "model"
-
+    model = VolcanoesNet()
 
     # Tranfert le rÃ©seau au bon endroit
     model.to(device)
@@ -148,16 +162,19 @@ if __name__ == '__main__':
     # TODO Q1C
     # Instancier une fonction d'erreur BinaryCrossEntropy
     # et la mettre dans une variable nommÃ©e criterion
+    criterion = nn.BCELoss()
 
 
     # TODO Q1C 
     # Instancier l'algorithme d'optimisation SGD
     # Ne pas oublier de lui donner les hyperparamÃ¨tres
     # d'entraÃ®nement : learning rate et momentum!
+    optimizer = SGD(model.parameters(), lr=learning_rate, momentum=momentum)
 
 
     # TODO Q1C
     # Mettre le rÃ©seau en mode entraÃ®nement
+    model.train()
 
 
     # TODO Q1C
@@ -173,17 +190,22 @@ if __name__ == '__main__':
 
             # TODO Q1C 
             # Mettre les gradients Ã  zÃ©ro
+            optimizer.zero_grad()
 
 
             # TODO Q1C
             # Calculer:
             # 1. l'infÃ©rence dans une variable "predictions"
             # 2. l'erreur dans une variable "loss"
+            predictions = model(images)
+            loss = criterion(predictions, targets)
 
 
             # TODO Q1C
             # RÃ©tropropager l'erreur et effectuer
             # une Ã©tape d'optimisation
+            loss.backward()
+            optimizer.step()
 
 
             # Ajoute le loss de la batch
@@ -202,3 +224,6 @@ if __name__ == '__main__':
     # affiche la matrice de confusion Ã  l'Ã©cran
     matrix = compute_confusion_matrix(model, test_loader, device)
     print(' [-] conf. mtx. : \n{}'.format(matrix))
+
+
+

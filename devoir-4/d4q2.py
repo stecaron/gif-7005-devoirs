@@ -53,7 +53,7 @@ SECTION = 'GRAD'
 
 # TODO Logistique
 # Mettre son numÃ©ro d'Ã©quipe ici
-NUMERO_EQUIPE = -10
+NUMERO_EQUIPE = 24
 
 # CrÃ©e la random seed
 RANDOM_SEED = CODES_DE_SECTION[SECTION] + NUMERO_EQUIPE
@@ -75,6 +75,7 @@ class LegoNet(nn.Module):
         # Changer la derniÃ¨re fully-connected layer
         # pour avoir le bon nombre de neurones de
         # sortie
+        self.model.fc = nn.Linear(in_features=512, out_features=16)
 
 
         if pretrained:
@@ -83,13 +84,20 @@ class LegoNet(nn.Module):
             # de la derniÃ¨re couche fc
             # Conseil: utiliser l'itÃ©rateur named_parameters()
             # et la variable requires_grad
+            for param in self.model.named_parameters():
+                if 'fc' in param[0]:
+                    param[1].requires_grad = True
+                else:
+                    param[1].requires_grad = False
+
+
 
 
     def forward(self, x):
         # TODO Q2B
         # Appeler la fonction forward du rÃ©seau
         # prÃ©-entraÃ®nÃ© (resnet18) de LegoNet
-
+        y = self.model.forward(x)
 
         return y
 
@@ -107,7 +115,7 @@ if __name__ == '__main__':
     # TODO Q2D
     # Faire rouler le code une fois sans prÃ©-entrainement
     # et l'autre fois avec prÃ©-entraÃ®nement
-    pretrained = False
+    pretrained = True
 
     # DÃ©finit si cuda est utilisÃ© ou non
     # mettre cuda pour utiliser un GPU
@@ -129,24 +137,26 @@ if __name__ == '__main__':
     composition = T.Compose([totensor, normalize])
 
     # Charge le dataset d'entraÃ®nement
-    train_set = ImageFolder('data/lego_data/train', transform=composition)
+    train_set = ImageFolder('data/train', transform=composition)
 
     # CrÃ©e un gÃ©nÃ©rateur alÃ©atoire avec la seed
     context_random = random.Random(RANDOM_SEED)
 
     # Selectionne 10% du jeu de test alÃ©atoirement pour allÃ©ger le calcul
-    test_set = ImageFolder('data/lego_data/test', transform=composition)
+    test_set = ImageFolder('data/test', transform=composition)
     idx = context_random.sample(range(len(test_set)), k=int(0.1 * len(test_set)))
     test_set.samples = [test_set.samples[i] for i in idx]
 
     # TODO Q2C
     # CrÃ©er les dataloader pytorch avec la
     # classe DataLoader de pytorch
-
+    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=True)
 
     # TODO Q2C
     # Instancier un rÃ©seau LegoNet
     # dans une variable nommÃ©e "model"
+    model = LegoNet(pretrained=pretrained)
 
 
     # Tranfert le rÃ©seau au bon endroit
@@ -155,17 +165,18 @@ if __name__ == '__main__':
     # TODO Q2C
     # Instancier une fonction d'erreur CrossEntropyLoss
     # et la mettre dans une variable nommÃ©e criterion
-
+    criterion = nn.CrossEntropyLoss()
 
     # TODO Q2C
     # Instancier l'algorithme d'optimisation SGD
     # Conseil: Filtrer les paramÃ¨tres non-gelÃ©s!
     # Ne pas oublier de lui donner les hyperparamÃ¨tres
     # d'entraÃ®nement : learning rate et momentum!
-
+    optimizer = SGD(model.parameters(), lr=learning_rate, momentum=momentum)
 
     # TODO Q2C
     # Mettre le rÃ©seau en mode entraÃ®nement
+    model.train()
 
 
     # RÃ©cupÃ¨re le nombre total de batch pour une epoch
@@ -184,17 +195,22 @@ if __name__ == '__main__':
 
             # TODO Q2C
             # Mettre les gradients Ã  zÃ©ro
+            optimizer.zero_grad()
 
 
             # TODO Q2C
             # Calculer:
             # 1. l'infÃ©rence dans une variable "predictions"
             # 2. l'erreur dans une variable "loss"
+            predictions = model(images)
+            loss = criterion(predictions, targets)
 
 
             # TODO Q2C
             # RÃ©tropropager l'erreur et effectuer
             # une Ã©tape d'optimisation
+            loss.backward()
+            optimizer.step()
 
 
             # Ajoute le loss de la batch
@@ -218,3 +234,9 @@ if __name__ == '__main__':
         print(' [-] pretrained test acc. {:.6f}%'.format(test_acc * 100))
     else:
         print(' [-] not pretrained test acc. {:.6f}%'.format(test_acc * 100))
+
+
+    model = LegoNet(pretrained=False)
+    model.load_state_dict(torch.load('lego_model_not_pretrained.pt'))
+    model.eval()
+
