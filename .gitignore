@@ -3,5 +3,6 @@
 
 #Ignore data
 devoir-4/data/**
+devoir-5/csdmc**
 
 *.pt
