@@ -95,30 +95,34 @@ if __name__ == "__main__":
         accuracy_test[n_tree] = adaboost_souche.score(X_test, y_test)
 
     pyplot.figure()
-    pyplot.plot(range(1, 50, 1), accuracy_train, label="Accuracy train")
-    pyplot.plot(range(1, 50, 1), accuracy_test, label="Accuracy test")
-    pyplot.title("Précision sur le test en fonction du nombre de weak learners.")
+    pyplot.plot(range(1, 50, 1), accuracy_train, label="Précision sur le train")
+    pyplot.plot(range(1, 50, 1), accuracy_test, label="Précision sur le test")
+    # pyplot.title("Précision sur le test en fonction du nombre de weak learners.")
     pyplot.legend(loc="lower right")
+    # pyplot.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-5/rapport/images/3a-souche.png")
     pyplot.show()
 
-    # Préparer la grille
-    n_tree_to_test = [3, 5, 7]
+    # Tracer les zones de décisions pour les souches
+    n_tree_to_test = [3, 5, 30]
     fig, subfigs = pyplot.subplots(2, 2, sharex='all', sharey='all')
-
-    for n_tree in n_tree_to_test:
+    for n_tree, subfig in zip(n_tree_to_test, subfigs.reshape(-1)):
         adaboost_souche = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1), n_estimators=n_tree + 1)
         adaboost_souche.fit(X_train, y_train)
-        x_min, x_max = X_train[:, 0].min() - 1, X_train[:, 0].max() + 1
-        y_min, y_max = X_train[:, 1].min() - 1, X_train[:, 1].max() + 1
+        x_min, x_max = X_test[:, 0].min() - 1, X_test[:, 0].max() + 1
+        y_min, y_max = X_test[:, 1].min() - 1, X_test[:, 1].max() + 1
         xx, yy = numpy.meshgrid(numpy.arange(x_min, x_max, 0.05),
                                 numpy.arange(y_min, y_max, 0.05))
 
         Z = adaboost_souche.predict(numpy.c_[xx.ravel(), yy.ravel()])
         Z = Z.reshape(xx.shape)
-        subfigs[0] =
-        pyplot.contourf(xx, yy, Z, alpha=0.5)
-        pyplot.scatter(X_train[:, 0], X_train[:, 1], c=y_train)
-        pyplot.show()
+        subfig.contourf(xx, yy, Z, alpha=0.5)
+        subfig.scatter(X_test[:, 0], X_test[:, 1], c=y_test)
+        subfig.set_title("Nombre de souches = " + str(n_tree))
+
+    pyplot.delaxes(subfigs[1][1])
+
+    # pyplot.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-5/rapport/images/3a-souche-zones.png")
+    pyplot.show()
 
     _times.append(time.time())
     checkTime(TMAX_Q3Ai, "3A avec souches")
@@ -130,31 +134,42 @@ if __name__ == "__main__":
     # les jeux d'entraÃ®nement et de test.
 
     accuracy_test = numpy.zeros(49)
+    accuracy_train = numpy.zeros(49)
     for n_tree in range(49):
         adaboost_arbres = AdaBoostClassifier(DecisionTreeClassifier(max_depth=3), n_estimators=n_tree + 1)
         adaboost_arbres.fit(X_train, y_train)
+        accuracy_train[n_tree] = adaboost_arbres.score(X_train, y_train)
         accuracy_test[n_tree] = adaboost_arbres.score(X_test, y_test)
 
     pyplot.figure()
-    pyplot.plot(range(1, 50, 1), accuracy_test)
-    pyplot.title("Précision sur le test en fonction du nombre de weak learners.")
+    pyplot.plot(range(1, 50, 1), accuracy_train, label="Précision sur le train")
+    pyplot.plot(range(1, 50, 1), accuracy_test, label="Précision sur le test")
+    # pyplot.title("Précision sur le test en fonction du nombre de weak learners.")à
+    pyplot.legend(loc="lower right")
+    # pyplot.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-5/rapport/images/3a-arbres.png")
     pyplot.show()
 
-    # Préparer la grille
+    # Tracer les zones de décisions pour les arbres
+    fig, subfigs = pyplot.subplots(2, 2, sharex='all', sharey='all')
     n_tree_to_test = [20, 30, 45]
-    for n_tree in n_tree_to_test:
+    for n_tree, subfig in zip(n_tree_to_test, subfigs.reshape(-1)):
         adaboost_arbres = AdaBoostClassifier(DecisionTreeClassifier(max_depth=3), n_estimators=n_tree + 1)
         adaboost_arbres.fit(X_train, y_train)
-        x_min, x_max = X_train[:, 0].min() - 1, X_train[:, 0].max() + 1
-        y_min, y_max = X_train[:, 1].min() - 1, X_train[:, 1].max() + 1
+        x_min, x_max = X_test[:, 0].min() - 1, X_test[:, 0].max() + 1
+        y_min, y_max = X_test[:, 1].min() - 1, X_test[:, 1].max() + 1
         xx, yy = numpy.meshgrid(numpy.arange(x_min, x_max, 0.05),
                                 numpy.arange(y_min, y_max, 0.05))
 
         Z = adaboost_arbres.predict(numpy.c_[xx.ravel(), yy.ravel()])
         Z = Z.reshape(xx.shape)
-        pyplot.contourf(xx, yy, Z, alpha=0.5)
-        pyplot.scatter(X_train[:, 0], X_train[:, 1], c=y_train)
-        pyplot.show()
+        subfig.contourf(xx, yy, Z, alpha=0.5)
+        subfig.scatter(X_test[:, 0], X_test[:, 1], c=y_test)
+        subfig.set_title("Nombre d'arbres = " + str(n_tree))
+
+    pyplot.delaxes(subfigs[1][1])
+
+    # pyplot.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-5/rapport/images/3a-arbres-zones.png")
+    pyplot.show()
 
     _times.append(time.time())
     checkTime(TMAX_Q3Aii, "3A avec arbres de profondeur 3")
@@ -173,10 +188,30 @@ if __name__ == "__main__":
         test_accuracy[n_tree] = rf.score(X_test, y_test)
 
     pyplot.figure()
-    pyplot.plot(range(1, 13, 1), train_accuracy, label="Précision en train")
-    pyplot.plot(range(1, 13, 1), test_accuracy, label="Précision en test")
-    pyplot.title("Précision sur le train/test en fonction de la profondeur max.")
+    pyplot.plot(range(1, 13, 1), train_accuracy, label="Précision sur le train")
+    pyplot.plot(range(1, 13, 1), test_accuracy, label="Précision sur le test")
+    # pyplot.title("Précision sur le train/test en fonction de la profondeur max.")
     pyplot.legend(loc="lower right")
+    # pyplot.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-5/rapport/images/3c-rf.png")
+    pyplot.show()
+
+    fig, subfigs = pyplot.subplots(2, 2, sharex='all', sharey='all')
+    n_tree_to_test = [1, 4, 8, 12]
+    for n_tree, subfig in zip(n_tree_to_test, subfigs.reshape(-1)):
+        rf = RandomForestClassifier(n_estimators=50, max_depth=n_tree)
+        rf.fit(X_train, y_train)
+        x_min, x_max = X_test[:, 0].min() - 1, X_test[:, 0].max() + 1
+        y_min, y_max = X_test[:, 1].min() - 1, X_test[:, 1].max() + 1
+        xx, yy = numpy.meshgrid(numpy.arange(x_min, x_max, 0.05),
+                                numpy.arange(y_min, y_max, 0.05))
+
+        Z = rf.predict(numpy.c_[xx.ravel(), yy.ravel()])
+        Z = Z.reshape(xx.shape)
+        subfig.contourf(xx, yy, Z, alpha=0.5)
+        subfig.scatter(X_test[:, 0], X_test[:, 1], c=y_test)
+        subfig.set_title("Profondeur = "+str(n_tree))
+
+    # pyplot.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-5/rapport/images/3c-rf-zones.png")
     pyplot.show()
 
     _times.append(time.time())

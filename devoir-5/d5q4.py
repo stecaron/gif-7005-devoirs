@@ -90,8 +90,7 @@ if __name__ == "__main__":
 
     # Reduction avec MDS
     mds = MDS(n_components=2, n_init=1)
-    mds.fit(X)
-    X_mds = mds.transform(X)
+    X_mds = mds.fit_transform(X)
 
     # Reduction avec TSNE
     tsne = TSNE(n_components=2)
@@ -120,8 +119,13 @@ if __name__ == "__main__":
     ratio_tsne = ratio_distance_intra_inter(X_tsne, y)
     ratio_original = ratio_distance_intra_inter(X, y)
 
+    print(ratio_pca)
+    print(ratio_mds)
+    print(ratio_tsne)
+    print(ratio_original)
+
     # Trouver des images prochent dans l'espace a 2D, mais de classes différentes
-    image_to_look = [(3, 9), (1, 8)]
+    image_to_look = [(3, 9), (1, 8), (7, 9)]
     digits_images = load_digits().images
     for combinaison in image_to_look:
         X_same = X_tsne[numpy.where(combinaison[0] == y)]

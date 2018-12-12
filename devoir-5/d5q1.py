@@ -184,7 +184,7 @@ if __name__ == "__main__":
     pyplot.plot(range(2, 52, 2), v_measure_info, label="Mesure V")
     pyplot.legend(loc='upper right')
 
-    pyplot.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-5/rapport/images/1b.png")
+    # pyplot.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-5/rapport/images/1b.png")
 
     _times.append(time.time())
     checkTime(TMAX_Q1B, "1B")
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     pyplot.plot(range(2, 52, 2), v_measure_info, label="Mesure V")
     pyplot.legend(loc='lower right')
 
-    pyplot.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-5/rapport/images/1c.png")
+    # pyplot.savefig("/Users/stephanecaron/Documents/universitee/maitrise-statistique/automne-2018/GIF-7005/devoirs/devoir-5/rapport/images/1c.png")
 
     _times.append(time.time())
     checkTime(TMAX_Q1C, "1C")
